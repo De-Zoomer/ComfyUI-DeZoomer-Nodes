@@ -1,0 +1,413 @@
+{
+    "id": "dcde20f7-00ed-41b9-a96f-28eef39e12f6",
+    "revision": 0,
+    "last_node_id": 20,
+    "last_link_id": 30,
+    "nodes": [
+        {
+            "id": 18,
+            "type": "Note",
+            "pos": [
+                -2660,
+                -870
+            ],
+            "size": [
+                250,
+                90
+            ],
+            "flags": {},
+            "order": 0,
+            "mode": 0,
+            "inputs": [],
+            "outputs": [],
+            "properties": {
+                "widget_ue_connectable": {}
+            },
+            "widgets_values": [
+                "Forcing the frames per second to 8 is recommended as it will help speed up the captioning process and makes it possible to caption long videos, without any loss."
+            ],
+            "color": "#432",
+            "bgcolor": "#653"
+        },
+        {
+            "id": 2,
+            "type": "VHS_LoadVideo",
+            "pos": [
+                -2660,
+                -720
+            ],
+            "size": [
+                252.056640625,
+                556.056640625
+            ],
+            "flags": {},
+            "order": 1,
+            "mode": 0,
+            "inputs": [
+                {
+                    "localized_name": "meta_batch",
+                    "name": "meta_batch",
+                    "shape": 7,
+                    "type": "VHS_BatchManager",
+                    "link": null
+                },
+                {
+                    "localized_name": "vae",
+                    "name": "vae",
+                    "shape": 7,
+                    "type": "VAE",
+                    "link": null
+                },
+                {
+                    "localized_name": "video",
+                    "name": "video",
+                    "type": "COMBO",
+                    "widget": {
+                        "name": "video"
+                    },
+                    "link": null
+                },
+                {
+                    "localized_name": "force_rate",
+                    "name": "force_rate",
+                    "type": "FLOAT",
+                    "widget": {
+                        "name": "force_rate"
+                    },
+                    "link": null
+                },
+                {
+                    "localized_name": "custom_width",
+                    "name": "custom_width",
+                    "type": "INT",
+                    "widget": {
+                        "name": "custom_width"
+                    },
+                    "link": null
+                },
+                {
+                    "localized_name": "custom_height",
+                    "name": "custom_height",
+                    "type": "INT",
+                    "widget": {
+                        "name": "custom_height"
+                    },
+                    "link": null
+                },
+                {
+                    "localized_name": "frame_load_cap",
+                    "name": "frame_load_cap",
+                    "type": "INT",
+                    "widget": {
+                        "name": "frame_load_cap"
+                    },
+                    "link": null
+                },
+                {
+                    "localized_name": "skip_first_frames",
+                    "name": "skip_first_frames",
+                    "type": "INT",
+                    "widget": {
+                        "name": "skip_first_frames"
+                    },
+                    "link": null
+                },
+                {
+                    "localized_name": "select_every_nth",
+                    "name": "select_every_nth",
+                    "type": "INT",
+                    "widget": {
+                        "name": "select_every_nth"
+                    },
+                    "link": null
+                },
+                {
+                    "localized_name": "format",
+                    "name": "format",
+                    "shape": 7,
+                    "type": "COMBO",
+                    "widget": {
+                        "name": "format"
+                    },
+                    "link": null
+                }
+            ],
+            "outputs": [
+                {
+                    "localized_name": "IMAGE",
+                    "name": "IMAGE",
+                    "type": "IMAGE",
+                    "links": [
+                        27
+                    ]
+                },
+                {
+                    "localized_name": "frame_count",
+                    "name": "frame_count",
+                    "type": "INT",
+                    "links": null
+                },
+                {
+                    "localized_name": "audio",
+                    "name": "audio",
+                    "type": "AUDIO",
+                    "links": null
+                },
+                {
+                    "localized_name": "video_info",
+                    "name": "video_info",
+                    "type": "VHS_VIDEOINFO",
+                    "links": null
+                }
+            ],
+            "properties": {
+                "cnr_id": "comfyui-videohelpersuite",
+                "ver": "1.6.0",
+                "Node name for S&R": "VHS_LoadVideo",
+                "widget_ue_connectable": {
+                    "video": true,
+                    "force_rate": true,
+                    "custom_width": true,
+                    "custom_height": true,
+                    "frame_load_cap": true,
+                    "skip_first_frames": true,
+                    "select_every_nth": true,
+                    "format": true
+                }
+            },
+            "widgets_values": {
+                "video": "6_pal-revealing_circles-0001-0140.mp4",
+                "force_rate": 8,
+                "custom_width": 0,
+                "custom_height": 0,
+                "frame_load_cap": 0,
+                "skip_first_frames": 0,
+                "select_every_nth": 1,
+                "format": "AnimateDiff",
+                "choose video to upload": "image",
+                "videopreview": {
+                    "hidden": false,
+                    "paused": false,
+                    "params": {
+                        "filename": "6_pal-revealing_circles-0001-0140.mp4",
+                        "type": "input",
+                        "format": "video/mp4",
+                        "force_rate": 8,
+                        "custom_width": 0,
+                        "custom_height": 0,
+                        "frame_load_cap": 0,
+                        "skip_first_frames": 0,
+                        "select_every_nth": 1
+                    }
+                }
+            }
+        },
+        {
+            "id": 19,
+            "type": "VideoCaptioning",
+            "pos": [
+                -2380,
+                -720
+            ],
+            "size": [
+                360,
+                550
+            ],
+            "flags": {},
+            "order": 2,
+            "mode": 0,
+            "inputs": [
+                {
+                    "localized_name": "images",
+                    "name": "images",
+                    "type": "IMAGE",
+                    "link": 27
+                },
+                {
+                    "localized_name": "user_prompt",
+                    "name": "user_prompt",
+                    "type": "STRING",
+                    "widget": {
+                        "name": "user_prompt"
+                    },
+                    "link": null
+                },
+                {
+                    "localized_name": "system_prompt",
+                    "name": "system_prompt",
+                    "type": "STRING",
+                    "widget": {
+                        "name": "system_prompt"
+                    },
+                    "link": null
+                },
+                {
+                    "localized_name": "model_name",
+                    "name": "model_name",
+                    "type": "COMBO",
+                    "widget": {
+                        "name": "model_name"
+                    },
+                    "link": null
+                },
+                {
+                    "localized_name": "temperature",
+                    "name": "temperature",
+                    "type": "FLOAT",
+                    "widget": {
+                        "name": "temperature"
+                    },
+                    "link": null
+                },
+                {
+                    "localized_name": "use_flash_attention",
+                    "name": "use_flash_attention",
+                    "type": "BOOLEAN",
+                    "widget": {
+                        "name": "use_flash_attention"
+                    },
+                    "link": null
+                },
+                {
+                    "localized_name": "low_cpu_mem_usage",
+                    "name": "low_cpu_mem_usage",
+                    "type": "BOOLEAN",
+                    "widget": {
+                        "name": "low_cpu_mem_usage"
+                    },
+                    "link": null
+                },
+                {
+                    "localized_name": "quantization_type",
+                    "name": "quantization_type",
+                    "type": "COMBO",
+                    "widget": {
+                        "name": "quantization_type"
+                    },
+                    "link": null
+                },
+                {
+                    "localized_name": "seed",
+                    "name": "seed",
+                    "type": "INT",
+                    "widget": {
+                        "name": "seed"
+                    },
+                    "link": null
+                }
+            ],
+            "outputs": [
+                {
+                    "localized_name": "caption",
+                    "name": "caption",
+                    "type": "STRING",
+                    "links": [
+                        30
+                    ]
+                }
+            ],
+            "properties": {
+                "Node name for S&R": "VideoCaptioning"
+            },
+            "widgets_values": [
+                "1. **Main Content:**\n    * What is the primary focus of the scene?\n    * Who are the main characters visible?\n\n2. **Object and Character Details:**\n    * Don't refer to characters as 'individual', 'characters' and 'persons', instead always use their gender or refer to them with their gender.\n    * Describe the appearance in detail\n    * What notable objects are present?\n\n3. **Actions and Movement:**\n    * Describe ALL movements, no matter how subtle.\n    * Specify the exact type of movement (walking, running, etc.).\n    * Note the direction and speed of movements.\n\n4. **Background Elements:**\n    * Describe the setting and environment.\n    * Note any environmental changes.\n\n5. **Visual Style:**\n    * Describe the lighting and color palette.\n    * Note any special effects or visual treatments.\n    * What is the overall style of the video? (e.g., realistic, animated, artistic, documentary)\n\n6. **Camera Work:**\n    * Describe EVERY camera angle change.\n    * Note the distance from subjects (close-up, medium, wide shot).\n    * Describe any camera movements (pan, tilt, zoom).\n\n7. **Scene Transitions:**\n    * How does each shot transition to the next?\n    * Note any changes in perspective or viewing angle.\n\nPlease be extremely specific and detailed in your description. If you notice any movement or changes, describe them explicitly.",
+                "You are a professional video analyst. Please provide an analysis of this video by covering each of these aspects in your answer. Use only one paragraph. DO NOT separate your answer into topics.",
+                "Qwen/Qwen2.5-VL-7B-Instruct",
+                0.3,
+                true,
+                true,
+                "4-bit",
+                180828259551980,
+                "randomize"
+            ]
+        },
+        {
+            "id": 3,
+            "type": "ShowText|pysssss",
+            "pos": [
+                -1980,
+                -720
+            ],
+            "size": [
+                330,
+                360
+            ],
+            "flags": {},
+            "order": 3,
+            "mode": 0,
+            "inputs": [
+                {
+                    "localized_name": "text",
+                    "name": "text",
+                    "type": "STRING",
+                    "link": 30
+                }
+            ],
+            "outputs": [
+                {
+                    "localized_name": "STRING",
+                    "name": "STRING",
+                    "shape": 6,
+                    "type": "STRING",
+                    "links": null
+                }
+            ],
+            "properties": {
+                "cnr_id": "comfyui-custom-scripts",
+                "ver": "1.2.4",
+                "Node name for S&R": "ShowText|pysssss",
+                "widget_ue_connectable": {}
+            },
+            "widgets_values": [
+                "The provided clip features a sequence where concentric circles expand outwardly against various vibrant backgrounds transitioning through different colors—green, yellow, red, blue, purple, pink, green again, then back to yellow before concluding on another solid red circle. There's neither human presence nor discernible action beyond the dynamic expansion of circular shapes. The background remains static throughout; it shifts between distinct hues but lacks depth or texture that would suggest a physical space like a room or outdoor area. Lighting appears even across all frames without shadows indicating strong artificial illumination typical for digital graphics rather than natural light sources. No camera work is evident since there’s no variation in angles or perspectives; every frame maintains direct frontal shots centered around expanding geometric forms. This suggests a simple animation designed purely visually, possibly intended more for aesthetic appeal during transitions within media content such as videos or presentations. Overall, its style leans towards abstract art due to lack of narrative elements or recognizable environments."
+            ]
+        }
+    ],
+    "links": [
+        [
+            27,
+            2,
+            0,
+            19,
+            0,
+            "IMAGE"
+        ],
+        [
+            30,
+            19,
+            0,
+            3,
+            0,
+            "STRING"
+        ]
+    ],
+    "groups": [],
+    "config": {},
+    "extra": {
+        "controller_panel": {
+            "controllers": {},
+            "hidden": true,
+            "highlight": true,
+            "version": 2,
+            "default_order": []
+        },
+        "ds": {
+            "scale": 0.8954302432552393,
+            "offset": [
+                3039.985866684186,
+                976.1973402668245
+            ]
+        },
+        "ue_links": [],
+        "links_added_by_ue": [],
+        "frontendVersion": "1.17.11",
+        "VHS_latentpreview": true,
+        "VHS_latentpreviewrate": 0,
+        "VHS_MetadataImage": true,
+        "VHS_KeepIntermediate": true,
+        "workspace_info": {
+            "id": "4ICKu3WJn7mf3XR9uQwvE"
+        }
+    },
+    "version": 0.4
+}

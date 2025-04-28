@@ -1,0 +1,13 @@
+__pycache__
+/venv
+_references
+*.code-workspace
+.idea
+.DS_Store
+.history
+.vscode
+*.ckpt
+*.pth
+types
+models
+*.code-workspace

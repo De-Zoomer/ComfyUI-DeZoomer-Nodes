@@ -1,0 +1,27 @@
+[project]
+name = "comfyui-dezoomer-nodes"
+description = "A collection of custom nodes for ComfyUI."
+version = "1.0.0"
+license = {file = "LICENSE"}
+dependencies = [
+    "accelerate>=0.25.0",
+    "bitsandbytes>=0.41.0",
+    "flash-attn>=2.3.0",
+    "huggingface_hub>=0.19.0",
+    "numpy>=1.24.0",
+    "opencv-python>=4.8.0",
+    "Pillow>=10.0.0",
+    "qwen-vl-utils[decord]==0.0.8",
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "transformers>=4.36.0"
+]
+
+[project.urls]
+Repository = "https://github.com/De-Zoomer/ComfyUI-DeZoomer-Nodes"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = "De-Zoomer"
+DisplayName = "ComfyUI-DeZoomer-Nodes"
+Icon = "https://avatars.githubusercontent.com/u/100093512"
