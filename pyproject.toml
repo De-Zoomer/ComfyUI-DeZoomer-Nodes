@@ -1,5 +1,5 @@
 [project]
-name = "ComfyUI-DeZoomer-Nodes"
+name = "comfyui-dezoomer-nodes"
 description = "A collection of custom nodes for ComfyUI."
 version = "1.0.0"
 license = {file = "LICENSE"}
@@ -22,6 +22,6 @@ Repository = "https://github.com/De-Zoomer/ComfyUI-DeZoomer-Nodes"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = "De-Zoomer"
+PublisherId = "dezoomer"
 DisplayName = "ComfyUI-DeZoomer-Nodes"
 Icon = "https://avatars.githubusercontent.com/u/100093512"
