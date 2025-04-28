@@ -1,5 +1,5 @@
 [project]
-name = "comfyui-dezoomer-nodes"
+name = "ComfyUI-DeZoomer-Nodes"
 description = "A collection of custom nodes for ComfyUI."
 version = "1.0.0"
 license = {file = "LICENSE"}
