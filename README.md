@@ -59,6 +59,7 @@ Takes video frames and generates detailed captions using the Qwen2.5-VL model.
 - **Quantization Type**: Memory optimization (4-bit or 8-bit)
 - **Seed**: Random seed for reproducible generation
 
+It's a porting node from [@cseti007](https://github.com/cseti007) on his [Qwen2.5-VL-Video-Captioning](https://github.com/cseti007/Qwen2.5-VL-Video-Captioning).
 The node processes video frames and generates comprehensive descriptions covering:
 - Main content and characters
 - Object and character details
