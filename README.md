@@ -2,19 +2,24 @@
 
 A collection of custom nodes for ComfyUI. Currently includes:
 
-1. **Video Captioning Node**: Generate captions for videos using the Qwen2.5-VL model. It's a porting node from [@cseti007](https://github.com/cseti007) on his [Qwen2.5-VL-Video-Captioning](https://github.com/cseti007/Qwen2.5-VL-Video-Captioning).
-   - Takes video frames as input (ComfyUI's IMAGE type)
-   - Configurable processing parameters
-
-2. **Caption Refinement Node**: Refines and enhances captions using the Qwen2.5 model
-   - Makes text more continuous and coherent
-   - Removes video-specific references
-   - Adds clothing details
-   - Uses only declarative sentences
+1. [**Video Captioning Node**](#video-captioning-node)
+2. [**Caption Refinement Node**](#caption-refinement-node)
 
 ---
 
 ## Installation
+
+### Option 1 (Recommended): Install via ComfyUI-Manager
+1. Install [ComfyUI-Manager](https://github.com/Comfy-Org/ComfyUI-Manager)
+2. Open ComfyUI
+3. Click on "Manager" tab
+4. Click on "Custom Nodes Manager"
+5. Search for "DeZoomer"
+6. Click "Install" on "ComfyUI-DeZoomer-Nodes"
+
+### Option 2: Manual Installation
+<details>
+<summary>Click to expand</summary>
 
 1. Clone this repository into your ComfyUI's `custom_nodes` folder:
 ```bash
@@ -26,6 +31,12 @@ git clone https://github.com/De-Zoomer/ComfyUI-DeZoomer-Nodes.git
 cd ComfyUI-DeZoomer-Nodes
 pip install -r requirements.txt
 ```
+
+3. If you're using the portable version of ComfyUI, run this command in the ComfyUI_windows_portable folder:
+```bash
+python_embeded\python.exe -m pip install -r ComfyUI\custom_nodes\ComfyUI-DeZoomer-Nodes\requirements.txt
+```
+</details>
 
 ---
 
