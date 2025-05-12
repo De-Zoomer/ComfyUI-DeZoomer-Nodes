@@ -57,6 +57,7 @@ Takes video frames and generates detailed captions using the Qwen2.5-VL model.
 - **Use Flash Attention**: Enables faster attention implementation (default: True)
 - **Low CPU Memory Usage**: Optimizes for low CPU memory usage (default: True)
 - **Quantization Type**: Memory optimization (4-bit or 8-bit)
+- **Keep Model Loaded**: Option to keep model in memory after processing (default: False)
 - **Seed**: Random seed for reproducible generation
 
 It's a porting node from [@cseti007](https://github.com/cseti007) on his [Qwen2.5-VL-Video-Captioning](https://github.com/cseti007/Qwen2.5-VL-Video-Captioning).
@@ -91,12 +92,19 @@ Takes a caption and refines it using the Qwen2.5 model.
 - **Temperature**: Controls randomness in generation (default: 0.7)
 - **Max Tokens**: Maximum tokens for refinement output (default: 200)
 - **Quantization Type**: Memory optimization (4-bit or 8-bit)
+- **Keep Model Loaded**: Option to keep model in memory after processing (default: False)
 - **Seed**: Random seed for reproducible generation
+
+The node refines captions by:
+- Making the text more continuous and coherent
+- Removing video-specific references
+- Adding clothing details
+- Using only declarative sentences
 
 #### Requirements
 
 - CUDA-compatible GPU (recommended)
-- At least 16GB of GPU memory for optimal performance
+- At least 16GB of GPU memory on 4-bit quantization (>18GB GPU for 8-bit)
 
 ---
 
