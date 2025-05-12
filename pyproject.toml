@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-dezoomer-nodes"
 description = "A collection of custom nodes for ComfyUI."
-version = "1.0.0"
+version = "1.0.1"
 license = {file = "LICENSE"}
 dependencies = [
     "accelerate>=0.25.0",

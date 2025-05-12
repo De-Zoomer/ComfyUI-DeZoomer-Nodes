@@ -10,9 +10,9 @@ import torch
 from typing import Tuple
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import folder_paths
+import comfy.model_management as mm
 from huggingface_hub import snapshot_download
 import os
-
 
 class CaptionRefinementNode:
     """
@@ -26,6 +26,7 @@ class CaptionRefinementNode:
     def __init__(self):
         """Initialize the CaptionRefinementNode with default configuration."""
         self.model = None
+        self.offload_device = mm.unet_offload_device()
         self.tokenizer = None
         self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
         
@@ -67,7 +68,8 @@ Keep the original text but only do the following modifications:
                 "temperature": ("FLOAT", {"default": 0.7, "min": 0.1, "max": 1.0, "step": 0.1}),
                 "max_tokens": ("INT", {"default": 200, "min": 50, "max": 1000, "step": 1}),
                 "quantization_type": (["4-bit", "8-bit"], {"default": "4-bit"}),
-                "seed": ("INT", {"default": 123,"min": 0, "max": 0xffffffffffffffff, "step": 1}),
+                "keep_model_loaded": ("BOOLEAN", {"default": False}),
+                "seed": ("INT", {"default": 1,"min": 1, "max": 0xffffffffffffffff, "step": 1}),
             },
         }
 
@@ -84,6 +86,7 @@ Input Parameters:
 - temperature: Controls randomness in generation (0.1-1.0)
 - max_tokens: Maximum tokens for refinement output
 - quantization_type: Memory optimization (4-bit or 8-bit)
+- keep_model_loaded: Whether to keep the model in memory after processing
 - seed: Random seed for reproducible generation
 
 The node refines captions by:
@@ -100,58 +103,56 @@ The node refines captions by:
             model_name: Name of the model to load
             quantization_type: Type of quantization to use ("4-bit" or "8-bit")
         """
-        if self.model is None or self.tokenizer is None:
-            try:
-                # Construct model path in ComfyUI's models directory
-                model_checkpoint = os.path.join(
-                    folder_paths.models_dir, "LLM", os.path.basename(model_name)
+        try:
+            # Construct model path in ComfyUI's models directory
+            model_checkpoint = os.path.join(
+                folder_paths.models_dir, "LLM", os.path.basename(model_name)
+            )
+
+            # Download model if it doesn't exist
+            if not os.path.exists(model_checkpoint):
+                print(f"Downloading model {model_name} to {model_checkpoint}...")
+                snapshot_download(
+                    repo_id=model_name,
+                    local_dir=model_checkpoint,
+                    local_dir_use_symlinks=False,
                 )
 
-                # Download model if it doesn't exist
-                if not os.path.exists(model_checkpoint):
-                    print(f"Downloading model {model_name} to {model_checkpoint}...")
-                    snapshot_download(
-                        repo_id=model_name,
-                        local_dir=model_checkpoint,
-                        local_dir_use_symlinks=False,
-                    )
-
-                # Prepare model loading kwargs
-                model_kwargs = {
-                    "torch_dtype": torch.float16,
-                    "device_map": "auto",
-                }
-                
-                # Add quantization settings
-                if quantization_type == "4-bit":
-                    model_kwargs["load_in_4bit"] = True
-                    model_kwargs["bnb_4bit_compute_dtype"] = torch.float16
-                    model_kwargs["bnb_4bit_use_double_quant"] = True
-                    model_kwargs["bnb_4bit_quant_type"] = "nf4"
-                else:  # 8-bit
-                    model_kwargs["load_in_8bit"] = True
-                    model_kwargs["llm_int8_threshold"] = 6.0
-                    model_kwargs["llm_int8_has_fp16_weight"] = False
-                
-                # Load model and tokenizer
+            # Prepare model loading kwargs
+            model_kwargs = {
+                "torch_dtype": torch.float16,
+                "device_map": "auto",
+            }
+            
+            # Add quantization settings
+            if quantization_type == "4-bit":
+                model_kwargs["load_in_4bit"] = True
+                model_kwargs["bnb_4bit_compute_dtype"] = torch.float16
+                model_kwargs["bnb_4bit_use_double_quant"] = True
+                model_kwargs["bnb_4bit_quant_type"] = "nf4"
+            else:  # 8-bit
+                model_kwargs["load_in_8bit"] = True
+                model_kwargs["llm_int8_threshold"] = 6.0
+                model_kwargs["llm_int8_has_fp16_weight"] = False
+            
+            # Load model and tokenizer if they don't exist
+            if self.model is None or self.tokenizer is None:
                 self.model = AutoModelForCausalLM.from_pretrained(
                     model_checkpoint,
                     **model_kwargs
                 )
                 self.tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
+            else:
+                # If model exists but was offloaded, reload it to the correct device
+                if next(self.model.parameters()).device.type == "cpu":
+                    self.model = AutoModelForCausalLM.from_pretrained(
+                        model_checkpoint,
+                        **model_kwargs
+                    )
                 
-            except Exception as e:
-                print(f"Error loading model: {str(e)}")
-                self.clear_memory()
-                raise
-
-    def clear_memory(self) -> None:
-        """Clear CUDA cache and force garbage collection."""
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-            torch.cuda.synchronize()
-        import gc
-        gc.collect()
+        except Exception as e:
+            print(f"Error loading model: {str(e)}")
+            raise
 
     def captionrefinement(
         self,
@@ -161,6 +162,7 @@ The node refines captions by:
         temperature: float,
         max_tokens: int,
         quantization_type: str,
+        keep_model_loaded: bool,
         seed: int
     ) -> Tuple[str]:
         """
@@ -173,6 +175,7 @@ The node refines captions by:
             temperature: Temperature for generation
             max_tokens: Maximum tokens for refinement output
             quantization_type: Type of quantization to use
+            keep_model_loaded: Whether to keep the model in memory after processing
             seed: Random seed for generation
             
         Returns:
@@ -229,9 +232,17 @@ The node refines captions by:
 
             # Extract generated response
             generated_ids = [
-                output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
+                output_ids[len(model_inputs["input_ids"][0]):] for output_ids in generated_ids
             ]
             response = self.tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
+
+            if not keep_model_loaded:
+                print("Offloading model...")
+                del self.tokenizer
+                del self.model
+                self.tokenizer = None
+                self.model = None
+                mm.soft_empty_cache()
 
             return (response.strip(),)
             
