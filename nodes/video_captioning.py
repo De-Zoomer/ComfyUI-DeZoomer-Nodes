@@ -13,6 +13,7 @@ from PIL import Image
 from typing import List, Tuple
 from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor, BitsAndBytesConfig
 import folder_paths
+import comfy.model_management as mm
 from qwen_vl_utils import process_vision_info
 from huggingface_hub import snapshot_download
 
@@ -29,6 +30,7 @@ class VideoCaptioningNode:
     def __init__(self):
         """Initialize the VideoCaptioningNode with default configuration."""
         self.model = None
+        self.offload_device = mm.unet_offload_device()
         self.processor = None
         self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
         
@@ -104,6 +106,7 @@ Please be extremely specific and detailed in your description. If you notice any
                 "use_flash_attention": ("BOOLEAN", {"default": True}),
                 "low_cpu_mem_usage": ("BOOLEAN", {"default": True}),
                 "quantization_type": (["4-bit", "8-bit"], {"default": "4-bit"}),
+                "keep_model_loaded": ("BOOLEAN", {"default": False}),
                 "seed": ("INT", {"default": 123,"min": 0, "max": 0xffffffffffffffff, "step": 1}),
             },
         }
@@ -123,6 +126,7 @@ Input Parameters:
 - use_flash_attention: Enables faster attention implementation
 - low_cpu_mem_usage: Optimizes for low CPU memory usage
 - quantization_type: Memory optimization (4-bit or 8-bit)
+- keep_model_loaded: Whether to keep the model in memory after processing
 - seed: Random seed for reproducible generation
 
 The node processes video frames and generates comprehensive descriptions covering:
@@ -169,9 +173,6 @@ The node processes video frames and generates comprehensive descriptions coverin
                 # Create quantization config based on selected type
                 quantization_config = self.create_quantization_config(quantization_type)
                 
-                # Clear CUDA cache and force garbage collection
-                self.clear_memory()
-                
                 self.model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
                     model_checkpoint,
                     torch_dtype=torch.float16,
@@ -187,7 +188,6 @@ The node processes video frames and generates comprehensive descriptions coverin
                 
             except Exception as e:
                 print(f"Error loading model: {str(e)}")
-                self.clear_memory()
                 raise
 
     def create_quantization_config(self, quantization_type: str) -> BitsAndBytesConfig:
@@ -213,14 +213,6 @@ The node processes video frames and generates comprehensive descriptions coverin
                 llm_int8_threshold=6.0,
                 llm_int8_has_fp16_weight=False
             )
-
-    def clear_memory(self) -> None:
-        """Clear CUDA cache and force garbage collection."""
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-            torch.cuda.synchronize()
-        import gc
-        gc.collect()
 
     def preprocess_frame(self, frame: np.ndarray) -> Image.Image:
         """
@@ -256,7 +248,7 @@ The node processes video frames and generates comprehensive descriptions coverin
         frame = frame.resize((new_width, new_height), Image.Resampling.LANCZOS)
         return frame
 
-    def generate_caption(self, frames: List[np.ndarray], user_prompt: str, system_prompt: str) -> str:
+    def generate_caption(self, frames: List[np.ndarray], user_prompt: str, system_prompt: str, keep_model_loaded: bool) -> str:
         """
         Generate a caption for the given video frames.
         
@@ -264,6 +256,7 @@ The node processes video frames and generates comprehensive descriptions coverin
             frames: List of video frames
             user_prompt: User prompt for caption generation
             system_prompt: System prompt for the model
+            keep_model_loaded: Whether to keep the model in memory after processing
             
         Returns:
             Generated caption as string
@@ -338,6 +331,14 @@ The node processes video frames and generates comprehensive descriptions coverin
             skip_special_tokens=True,
             clean_up_tokenization_spaces=False
         )[0]
+
+        if not keep_model_loaded:
+            print("Offloading model...")
+            del self.processor
+            del self.model
+            self.processor = None
+            self.model = None
+            mm.soft_empty_cache()
         
         return caption
 
@@ -351,6 +352,7 @@ The node processes video frames and generates comprehensive descriptions coverin
         use_flash_attention: bool,
         low_cpu_mem_usage: bool,
         quantization_type: str,
+        keep_model_loaded: bool,
         seed: int
     ) -> Tuple[str]:
         """
@@ -365,6 +367,7 @@ The node processes video frames and generates comprehensive descriptions coverin
             use_flash_attention: Whether to use flash attention
             low_cpu_mem_usage: Whether to use low CPU memory
             quantization_type: Type of quantization to use
+            keep_model_loaded: Whether to keep the model in memory after processing
             seed: Random seed for generation
             
         Returns:
@@ -402,7 +405,7 @@ The node processes video frames and generates comprehensive descriptions coverin
                 return ("Error: No frames could be processed.",)
                         
             # Generate caption
-            caption = self.generate_caption(frames, user_prompt, system_prompt)
+            caption = self.generate_caption(frames, user_prompt, system_prompt, keep_model_loaded)
             
             return (caption,)
             
