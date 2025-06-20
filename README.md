@@ -10,6 +10,7 @@ A collection of custom nodes for ComfyUI. Currently includes:
 ## Installation
 
 ### Option 1 (Recommended): Install via ComfyUI-Manager
+
 1. Install [ComfyUI-Manager](https://github.com/Comfy-Org/ComfyUI-Manager)
 2. Open ComfyUI
 3. Click on "Manager" tab
@@ -18,24 +19,51 @@ A collection of custom nodes for ComfyUI. Currently includes:
 6. Click "Install" on "ComfyUI-DeZoomer-Nodes"
 
 ### Option 2: Manual Installation
+
 <details>
 <summary>Click to expand</summary>
 
 1. Clone this repository into your ComfyUI's `custom_nodes` folder:
+
 ```bash
 git clone https://github.com/De-Zoomer/ComfyUI-DeZoomer-Nodes.git
 ```
 
 2. Install the required dependencies:
+
 ```bash
 cd ComfyUI-DeZoomer-Nodes
 pip install -r requirements.txt
 ```
 
 3. If you're using the portable version of ComfyUI, run this command in the ComfyUI_windows_portable folder:
+
 ```bash
 python_embeded\python.exe -m pip install -r ComfyUI\custom_nodes\ComfyUI-DeZoomer-Nodes\requirements.txt
 ```
+
+</details>
+
+---
+
+## Changelog
+
+All notable changes to this project will be documented in this section.
+
+<details>
+<summary>Click to expand</summary>
+
+### 1.0.2
+
+- Add SkyCaptioner-V1 as an option on Video Captioning node.
+
+### 1.0.1
+
+- Memory management improvements.
+
+### 1.0.0
+
+- Initial release with Video Captioning and Caption Refinement nodes.
 </details>
 
 ---
@@ -52,7 +80,7 @@ Takes video frames and generates detailed captions using the Qwen2.5-VL model.
 - **Images**: Input video frames to process (ComfyUI's IMAGE type)
 - **User Prompt**: Detailed instructions for what aspects to analyze (default provided)
 - **System Prompt**: Instructions for the model's behavior and output style
-- **Model Name**: Qwen2.5-VL model to use (default: "Qwen/Qwen2.5-VL-7B-Instruct")
+- **Model Name**: Qwen2.5-VL model to use. Also supports SkyCaptioner-V1 (default: "Qwen/Qwen2.5-VL-7B-Instruct")
 - **Temperature**: Controls randomness in generation (default: 0.3)
 - **Use Flash Attention**: Enables faster attention implementation (default: True)
 - **Low CPU Memory Usage**: Optimizes for low CPU memory usage (default: True)
@@ -62,6 +90,7 @@ Takes video frames and generates detailed captions using the Qwen2.5-VL model.
 
 It's a porting node from [@cseti007](https://github.com/cseti007) on his [Qwen2.5-VL-Video-Captioning](https://github.com/cseti007/Qwen2.5-VL-Video-Captioning).
 The node processes video frames and generates comprehensive descriptions covering:
+
 - Main content and characters
 - Object and character details
 - Actions and movements
@@ -96,6 +125,7 @@ Takes a caption and refines it using the Qwen2.5 model.
 - **Seed**: Random seed for reproducible generation
 
 The node refines captions by:
+
 - Making the text more continuous and coherent
 - Removing video-specific references
 - Adding clothing details
@@ -117,5 +147,7 @@ This project is licensed under the GPL License - see the LICENSE file for detail
 ## Acknowledgments
 
 This project uses the following models developed by Alibaba Cloud:
+
 - [Qwen2.5-VL model](https://github.com/QwenLM/Qwen2.5-VL) for video captioning
-- [Qwen2.5 model](https://github.com/QwenLM/Qwen2.5) for caption refinement 
+- [SkyCaptioner-V1 model](https://huggingface.co/Skywork/SkyCaptioner-V1) for video captioning
+- [Qwen2.5 model](https://github.com/QwenLM/Qwen2.5) for caption refinement
