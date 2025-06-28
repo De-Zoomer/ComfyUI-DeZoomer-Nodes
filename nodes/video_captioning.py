@@ -101,7 +101,7 @@ Please be extremely specific and detailed in your description. If you notice any
                     "default": "You are a professional video analyst. Please provide an analysis of this video by covering each of these aspects in your answer. Use only one paragraph. DO NOT separate your answer into topics.",
                     "multiline": True
                 }),
-                "model_name": (["Qwen/Qwen2.5-VL-7B-Instruct", "Qwen/Qwen2.5-VL-1.5B-Instruct", "Qwen/Qwen2.5-VL-72B-Instruct", "Skywork/SkyCaptioner-V1"], {"default": "Qwen/Qwen2.5-VL-7B-Instruct"}),
+                "model_name": (["Qwen/Qwen2.5-VL-7B-Instruct", "Qwen/Qwen2.5-VL-1.5B-Instruct", "Qwen/Qwen2.5-VL-72B-Instruct", "Vchitect/ShotVL-7B", "Skywork/SkyCaptioner-V1"], {"default": "Qwen/Qwen2.5-VL-7B-Instruct"}),
                 "temperature": ("FLOAT", {"default": 0.3, "min": 0.1, "max": 1.0, "step": 0.1}),
                 "use_flash_attention": ("BOOLEAN", {"default": True}),
                 "low_cpu_mem_usage": ("BOOLEAN", {"default": True}),
