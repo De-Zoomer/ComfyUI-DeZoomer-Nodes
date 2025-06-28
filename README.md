@@ -53,6 +53,10 @@ All notable changes to this project will be documented in this section.
 <details>
 <summary>Click to expand</summary>
 
+### 1.0.3
+
+- Add ShotVL as an option on Video Captioning node.
+
 ### 1.0.2
 
 - Add SkyCaptioner-V1 as an option on Video Captioning node.
@@ -80,7 +84,7 @@ Takes video frames and generates detailed captions using the Qwen2.5-VL model.
 - **Images**: Input video frames to process (ComfyUI's IMAGE type)
 - **User Prompt**: Detailed instructions for what aspects to analyze (default provided)
 - **System Prompt**: Instructions for the model's behavior and output style
-- **Model Name**: Qwen2.5-VL model to use. Also supports SkyCaptioner-V1 (default: "Qwen/Qwen2.5-VL-7B-Instruct")
+- **Model Name**: Qwen2.5-VL model to use. Also supports SkyCaptioner-V1 and ShotVL (default: "Qwen/Qwen2.5-VL-7B-Instruct")
 - **Temperature**: Controls randomness in generation (default: 0.3)
 - **Use Flash Attention**: Enables faster attention implementation (default: True)
 - **Low CPU Memory Usage**: Optimizes for low CPU memory usage (default: True)
@@ -149,5 +153,6 @@ This project is licensed under the GPL License - see the LICENSE file for detail
 This project uses the following models developed by Alibaba Cloud:
 
 - [Qwen2.5-VL model](https://github.com/QwenLM/Qwen2.5-VL) for video captioning
+- [ShotVL-7B model](https://huggingface.co/Vchitect/ShotVL-7B) for video captioning
 - [SkyCaptioner-V1 model](https://huggingface.co/Skywork/SkyCaptioner-V1) for video captioning
 - [Qwen2.5 model](https://github.com/QwenLM/Qwen2.5) for caption refinement
